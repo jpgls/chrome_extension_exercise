@@ -1,0 +1,3 @@
+[submodule "chrome_extension_exercise.wiki"]
+	path = chrome_extension_exercise.wiki
+	url = git@github.com:jpgls/chrome_extension_exercise.wiki.git
