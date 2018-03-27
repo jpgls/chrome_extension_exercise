@@ -171,3 +171,5 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('status').hidden = false;
     });   
 });
+
+// REMOVE ME - code review workaround
