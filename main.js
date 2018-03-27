@@ -1,108 +1,124 @@
-function getJIRAFeed(callback, errorCallback){
-    var user = document.getElementById("user").value;
-    if(user == undefined) return;
-    
-    var url = "https://jira.secondlife.com/activity?maxResults=50&streams=user+IS+"+user+"&providers=issues";
-    make_request(url, "").then(function(response) {
-      // empty response type allows the request.responseXML property to be returned in the makeRequest call
-      callback(url, response);
-    }, errorCallback);
-}
-/**
- * @param {string} searchTerm - Search term for JIRA Query.
- * @param {function(string)} callback - Called when the query results have been  
- *   formatted for rendering.
- * @param {function(string)} errorCallback - Called when the query or call fails.
- */
-async function getQueryResults(s, callback, errorCallback) {                                                 
-    try {
-      var response = await make_request(s, "json");
-      callback(createHTMLElementResult(response));
-    } catch (error) {
-      errorCallback(error);
-    }
-}
-
-function make_request(url, responseType) {
-  return new Promise(function(resolve, reject) {
-    var req = new XMLHttpRequest();
-    req.open('GET', url);
-    req.responseType = responseType;
-
-    req.onload = function() {
-      var response = responseType ? req.response : req.responseXML;
-      if(response && response.errorMessages && response.errorMessages.length > 0){
-        reject(response.errorMessages[0]);
-        return;
-      }
-      resolve(response);
-    };
-
-    // Handle network errors
-    req.onerror = function() {
-      reject(Error("Network Error"));
-    }
-    req.onreadystatechange = function() { 
-      if(req.readyState == 4 && req.status == 401) { 
-          reject("You must be logged in to JIRA to see this project.");
-      }
-    }
-
-    // Make the request
-    req.send();
-  });
-}
-
-
-
-function loadOptions(){
-  chrome.storage.sync.get({
-    project: 'Sunshine',
-    user: 'nyx.linden'
-  }, function(items) {
-    document.getElementById('project').value = items.project;
-    document.getElementById('user').value = items.user;
-  });
-}
-function buildJQL(callback) {
-  var callbackBase = "https://jira.secondlife.com/rest/api/2/search?jql=";
-  var project = document.getElementById("project").value;
-  var status = document.getElementById("statusSelect").value;
-  var inStatusFor = document.getElementById("daysPast").value
-  var fullCallbackUrl = callbackBase;
-  fullCallbackUrl += `project=${project}+and+status=${status}+and+status+changed+to+${status}+before+-${inStatusFor}d&fields=id,status,key,assignee,summary&maxresults=100`;
-  callback(fullCallbackUrl);
-}
-function createHTMLElementResult(response){
-
-// 
-// Create HTML output to display the search results.
-// results.json in the "json_results" folder contains a sample of the API response
-// hint: you may run the application as well if you fix the bug. 
-// 
-
-  return '<p>There may be results, but you must read the response and display them.</p>';
-  
-}
-
-// utility 
-function domify(str){
-  var dom = (new DOMParser()).parseFromString('<!doctype html><body>' + str,'text/html');
-  return dom.body.textContent;
-}
-
 function checkProjectExists(){
+  console.log("main | checkProjectExists()");
     try {
-      return make_request("https://jira.secondlife.com/rest/api/2/project/SUN", "json");
+      return makeRequest("https://jira.secondlife.com/rest/api/2/project/SUN", "json");
     } catch (errorMessage) {
       document.getElementById('status').innerHTML = 'ERROR. ' + errorMessage;
       document.getElementById('status').hidden = false;
     }
-}
+  }
+  
+  function makeRequest(url, responseType) {
+    console.log("main | makeRequest(url, responseType) | url is:", url);
+    console.log("main | makeRequest(url, responseType) | responsType is:", responseType);
+    return new Promise(function(resolve, reject) {
+      var req = new XMLHttpRequest();
+      req.open('GET', url);
+      req.responseType = responseType;
+      
+      req.onload = function() {
+        var response = responseType ? req.response : req.responseXML;
+        if(response && response.errorMessages && response.errorMessages.length > 0){
+          reject(response.errorMessages[0]);
+          return;
+        }
+        resolve(response);
+      };
+      
+      // Handle network errors
+      req.onerror = function() {
+        reject(Error("Network Error"));
+      }
+      req.onreadystatechange = function() { 
+        if(req.readyState == 4 && req.status == 401) { 
+          reject("You must be logged in to JIRA to see this project.");
+        }
+      }
+      
+      // Make the request
+      req.send();
+    });
+  }
+  
+  function loadOptions(){
+    console.log("main | loadOptions()");
+    chrome.storage.sync.get({
+      project: 'Sunshine',
+      user: 'nyx.linden'
+    }, function(items) {
+      document.getElementById('project').value = items.project;
+      document.getElementById('user').value = items.user;
+    });
+  }
+  
+  /**
+   * Ticket Status Query Related
+   */
+  function buildJQL(callback) {
+    console.log("main | buildJQL(callback) | callback is:", callback);
+    var callbackBase = "https://jira.secondlife.com/rest/api/2/search?jql=";
+    var project = document.getElementById("project").value;
+    var status = document.getElementById("statusSelect").value;
+    var inStatusFor = document.getElementById("daysPast").value
+    var fullCallbackUrl = callbackBase;
+    fullCallbackUrl += `project=${project}+and+status=${status}+and+status+changed+to+${status}+before+-${inStatusFor}d&fields=id,status,key,assignee,summary&maxresults=100`;
+    callback(fullCallbackUrl);
+  }
+  
+  /**
+   * @param {string} searchTerm - Search term for JIRA Query.
+   * @param {function(string)} callback - Called when the query results have been  
+   *   formatted for rendering.
+   * @param {function(string)} errorCallback - Called when the query or call fails.
+   */
+  async function getQueryResults(searchTerm, callback, errorCallback) {      
+    console.log("main | getQueryResults(s, callback, errorCallback) | searchTerm is:", searchTerm);                                           
+    console.log("main | getQueryResults(s, callback, errorCallback) | callback is:", callback);                                           
+    console.log("main | getQueryResults(s, callback, errorCallback) | errorCallback is:", errorCallback);                                           
+    try {
+      var response = await makeRequest(searchTerm, "json");
+      callback(createHTMLElementResult(response));
+    } catch (error) {
+      errorCallback(error);
+    }
+  }
+  
+  /**
+   * Jira Activity Query Related
+   */
+  function getJIRAFeed(callback, errorCallback){
+    console.log("main | getJIRAFeed(callback, errorCallback) | callback is:", callback);
+    console.log("main | getJIRAFeed(callback, errorCallback) | errorCallback is:", errorCallback);
+    var user = document.getElementById("user").value;
+    if(user == undefined) return;
+    
+    var url = "https://jira.secondlife.com/activity?maxResults=50&streams=user+IS+"+user+"&providers=issues";
+    makeRequest(url, "").then(function(response) {
+      // empty response type allows the request.responseXML property to be returned in the makeRequest call
+      callback(url, response);
+    }, errorCallback);
+  }
+  
+  function createHTMLElementResult(response){
+    console.log("main | createHTMLElementResults(response) | response is:", response);
+    // TODO:
+    // Create HTML output to display the search results.
+    // results.json in the "json_results" folder contains a sample of the API response
+    // hint: you may run the application as well if you fix the bug. 
+    return '<p>There may be results, but you must read the response and display them.</p>';
+  }
+  
+  // utility 
+  function domify(str){
+    console.log("main | domify(str) | str is:", str);
+    var dom = (new DOMParser()).parseFromString('<!doctype html><body>' + str,'text/html');
+    return dom.body.textContent;
+  }
 
-// Setup
-document.addEventListener('DOMContentLoaded', function() {
-  // if logged in, setup listeners
+  
+  // Setup
+  document.addEventListener('DOMContentLoaded', function() {
+    // if logged in, setup listeners
     checkProjectExists().then(function() {
       //load saved options
       loadOptions();
