@@ -66,11 +66,13 @@ function checkProjectExists(){
    *   formatted for rendering.
    * @param {function(string)} errorCallback - Called when the query or call fails.
    */
-  async function getQueryResults(searchTerm, callback, errorCallback) {      
-    try {
-      var response = await makeRequest(searchTerm, "json");
-      callback(createHTMLElementResult(response));
-    } catch (error) {
+  async function getQueryResults(searchTerm, callback, errorCallback) {
+  try {
+  var response = await makeRequest(searchTerm, "json");
+// console.log("main | getQueryResults() | response is:", response);
+    callback(createHTMLElementResult(response));
+  } catch (error) {
+// console.log("main | getQueryResults() | error is:", error);
       errorCallback(error);
     }
   }
@@ -90,11 +92,10 @@ function checkProjectExists(){
   }
   
   function createHTMLElementResult(response){
-    // TODO:
-    // Create HTML output to display the search results.
-    // results.json in the "json_results" folder contains a sample of the API response
-    // hint: you may run the application as well if you fix the bug. 
-    return '<p>There may be results, but you must read the response and display them.</p>';
+    const resultsLength = response.issues.length;
+
+
+    return '<p>' + resultsLength + ' results found.</p>';
   }
   
   // utility 
