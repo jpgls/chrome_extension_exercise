@@ -93,9 +93,10 @@ function checkProjectExists(){
   
   function createHTMLElementResult(response){
     const resultsLength = response.issues.length;
+    const markup_total = `<p>${resultsLength} results found.</p>`;
 
-
-    return '<p>' + resultsLength + ' results found.</p>';
+    // return '<p>' + resultsLength + ' results found.</p>';
+    return markup_total;
   }
   
   // utility 
