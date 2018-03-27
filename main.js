@@ -25,12 +25,12 @@ function checkProjectExists(){
       // Handle network errors
       req.onerror = function() {
         reject(Error("Network Error"));
-      }
+      };
       req.onreadystatechange = function() { 
         if(req.readyState == 4 && req.status == 401) { 
           reject("You must be logged in to JIRA to see this project.");
         }
-      }
+      };
       
       // Make the request
       req.send();
@@ -54,7 +54,7 @@ function checkProjectExists(){
     var callbackBase = "https://jira.secondlife.com/rest/api/2/search?jql=";
     var project = document.getElementById("project").value;
     var status = document.getElementById("statusSelect").value;
-    var inStatusFor = document.getElementById("daysPast").value
+    var inStatusFor = document.getElementById("daysPast").value;
     var fullCallbackUrl = callbackBase;
     fullCallbackUrl += `project=${project}+and+status=${status}+and+status+changed+to+${status}+before+-${inStatusFor}d&fields=id,status,key,assignee,summary&maxresults=100`;
     callback(fullCallbackUrl);
