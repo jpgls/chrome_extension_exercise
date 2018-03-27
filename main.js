@@ -93,7 +93,7 @@ function domify(str){
 
 function checkProjectExists(){
     try {
-      return await make_request("https://jira.secondlife.com/rest/api/2/project/SUN", "json");
+      return make_request("https://jira.secondlife.com/rest/api/2/project/SUN", "json");
     } catch (errorMessage) {
       document.getElementById('status').innerHTML = 'ERROR. ' + errorMessage;
       document.getElementById('status').hidden = false;
