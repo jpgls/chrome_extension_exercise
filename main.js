@@ -96,26 +96,24 @@ function checkProjectExists(){
 
     for (let issue of issues) {
       const markupTableRow = `
-        <tr>
           <td>
-            <a href="${issue.fields.self}" target="_blank">
+            <a href="${issue.self}" target="_blank">
               ${issue.key}
             </a>
           </td>
           <td>${issue.fields.summary}</td>
           <td>${issue.fields.status.name}</td>
-        </tr>
       `;
       markupIssues.push(markupTableRow);
     };
 
     const markupTable  =  `
-    <table class="u-full-width">
+    <table class="u-full-width table-results">
       <thead>
         <tr>
-          <th>Issue</th>
-          <th>Summary</th>
-          <th>Status</th>
+          <th class="table-issue">Issue</th>
+          <th class="table-summary">Summary</th>
+          <th class="table-status>Status</th>
         </tr>
       </thead>
       <tbody>
