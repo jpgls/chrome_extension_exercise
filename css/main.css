@@ -1,0 +1,19 @@
+body {
+    width: 800px;
+    max-width: 800px;
+}
+
+.container {
+    max-width: 800px;
+}
+
+.queries,
+.results {
+    width: 100%;
+    max-width: 790px;
+    overflow: scroll;
+}
+
+.queries {
+    margin-top: 1em;
+}
