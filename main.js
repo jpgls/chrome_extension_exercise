@@ -92,11 +92,48 @@ function checkProjectExists(){
   }
   
   function createHTMLElementResult(response){
-    const resultsLength = response.issues.length;
-    const markup_total = `<p>${resultsLength} results found.</p>`;
+    const issues = response.issues;
+    const markupTotal = `<p>${issues.length} results found.</p>`; 
+    const markupIssues = [];
 
-    // return '<p>' + resultsLength + ' results found.</p>';
-    return markup_total;
+    for (let issue of issues) {
+      const markupTableRow = `
+        <tr>
+          <td>
+            <a href="${issue.fields.self}" target="_blank">
+              ${issue.key}
+            </a>
+          </td>
+          <td>${issue.fields.summary}</td>
+          <td>${issue.fields.status.name}</td>
+        </tr>
+      `;
+      markupIssues.push(markupTableRow);
+    };
+
+    const markupTable  =  `
+    <table class="u-full-width">
+      <thead>
+        <tr>
+          <th>Issue</th>
+          <th>Summary</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${markupIssues.map(issueRow => `
+            <tr>${issueRow}</tr>
+        `).join('')}
+      </tbody>
+    </table>
+    `;
+
+    const markup = `
+      ${markupTotal}
+      ${markupTable}
+    `;
+
+    return markup;
   }
   
   // utility 
