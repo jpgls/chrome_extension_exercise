@@ -96,6 +96,7 @@ function checkProjectExists(){
 
     for (let issue of issues) {
       const markupTableRow = `
+        <tr>
           <td>
             <a href="${issue.self}" target="_blank">
               ${issue.key}
@@ -103,22 +104,25 @@ function checkProjectExists(){
           </td>
           <td>${issue.fields.summary}</td>
           <td>${issue.fields.status.name}</td>
+        </tr>
       `;
       markupIssues.push(markupTableRow);
     };
 
-    const markupTable  =  `
+    const markupTableHead  =  `
     <table class="u-full-width table-results">
       <thead>
         <tr>
           <th class="table-issue">Issue</th>
           <th class="table-summary">Summary</th>
-          <th class="table-status>Status</th>
+          <th class="table-status">Status</th>
         </tr>
       </thead>
+      `;
+    const markupTableBody = `
       <tbody>
         ${markupIssues.map(issueRow => `
-            <tr>${issueRow}</tr>
+            ${issueRow}
         `).join('')}
       </tbody>
     </table>
@@ -126,7 +130,8 @@ function checkProjectExists(){
 
     const markup = `
       ${markupTotal}
-      ${markupTable}
+      ${markupTableHead}
+      ${markupTableBody}
     `;
 
     return markup;
