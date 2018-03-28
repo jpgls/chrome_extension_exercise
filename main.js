@@ -66,7 +66,7 @@ function checkProjectExists(){
    *   formatted for rendering.
    * @param {function(string)} errorCallback - Called when the query or call fails.
    */
-  async function getQueryResults(searchTerm, callback, errorCallback) {      
+  async function getQueryResults(searchTerm, callback, errorCallback) {
     try {
       var response = await makeRequest(searchTerm, "json");
       callback(createHTMLElementResult(response));
@@ -90,11 +90,48 @@ function checkProjectExists(){
   }
   
   function createHTMLElementResult(response){
-    // TODO:
-    // Create HTML output to display the search results.
-    // results.json in the "json_results" folder contains a sample of the API response
-    // hint: you may run the application as well if you fix the bug. 
-    return '<p>There may be results, but you must read the response and display them.</p>';
+    const issues = response.issues;
+    const markupTotal = `<p>${issues.length} results found.</p>`; 
+    const markupIssues = [];
+
+    for (let issue of issues) {
+      const markupTableRow = `
+        <tr>
+          <td>
+            <a href="${issue.fields.self}" target="_blank">
+              ${issue.key}
+            </a>
+          </td>
+          <td>${issue.fields.summary}</td>
+          <td>${issue.fields.status.name}</td>
+        </tr>
+      `;
+      markupIssues.push(markupTableRow);
+    };
+
+    const markupTable  =  `
+    <table class="u-full-width">
+      <thead>
+        <tr>
+          <th>Issue</th>
+          <th>Summary</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${markupIssues.map(issueRow => `
+            <tr>${issueRow}</tr>
+        `).join('')}
+      </tbody>
+    </table>
+    `;
+
+    const markup = `
+      ${markupTotal}
+      ${markupTable}
+    `;
+
+    return markup;
   }
   
   // utility 
