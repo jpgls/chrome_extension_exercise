@@ -69,10 +69,8 @@ function checkProjectExists(){
   async function getQueryResults(searchTerm, callback, errorCallback) {
   try {
   var response = await makeRequest(searchTerm, "json");
-// console.log("main | getQueryResults() | response is:", response);
     callback(createHTMLElementResult(response));
   } catch (error) {
-// console.log("main | getQueryResults() | error is:", error);
       errorCallback(error);
     }
   }
