@@ -67,10 +67,10 @@ function checkProjectExists(){
    * @param {function(string)} errorCallback - Called when the query or call fails.
    */
   async function getQueryResults(searchTerm, callback, errorCallback) {
-  try {
-  var response = await makeRequest(searchTerm, "json");
-    callback(createHTMLElementResult(response));
-  } catch (error) {
+    try {
+      var response = await makeRequest(searchTerm, "json");
+      callback(createHTMLElementResult(response));
+    } catch (error) {
       errorCallback(error);
     }
   }
