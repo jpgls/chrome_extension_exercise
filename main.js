@@ -98,7 +98,7 @@ function checkProjectExists(){
       const markupTableRow = `
         <tr>
           <td>
-            <a href="${issue.self}" target="_blank">
+            <a href="https://jira.secondlife.com/browse/${issue.key}" target="_blank">
               ${issue.key}
             </a>
           </td>
